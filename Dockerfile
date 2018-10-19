@@ -8,6 +8,9 @@ MAINTAINER Florian Kleber <kleberbaum@erebos.xyz>
 # Nextcloud change here to desired version
 ARG NEXTCLOUD_VERSION=14
 
+# optional theme
+ARG NEXTCLOUD_THEME_LINK=https://github.com/mwalbeck/nextcloud-breeze-dark/archive/v14.0.1.tar.gz
+
 ENV UID=991 GID=991 \
     UPLOAD_MAX_SIZE=10G \
     APC_SHM_SIZE=128M \
@@ -57,6 +60,8 @@ RUN echo "## Installing base ##" && \
     && CHECKSUM_STATE=$(echo -n $(sha512sum -c latest.tar.bz2.sha512) | tail -c 2) \
     && if [ "${CHECKSUM_STATE}" != "OK" ]; then echo "Warning! Checksum does not match!" && exit 1; fi \
     && tar xjf latest.tar.bz2 --strip 1 -C /nextcloud \
+    && wget ${NEXTCLOUD_THEME_LINK} -O theme.tar.gz \
+    && tar -xzf theme.tar.gz -C /nextcloud/themes \
     && update-ca-certificates \
     && apk del build-dependencies \
     && rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /var/cache/distfiles/*

@@ -30,6 +30,14 @@ cat > $CONFIGFILE <<EOF;
   'memcache.local' => '\OC\Memcache\APCu',
 
   'instanceid' => '$instanceid',
+EOF
+if [[ ! -z "$THEME"  ]]; then
+  cat >> $CONFIGFILE <<EOF;
+  # Add a desired theme.
+  'theme'         => '${THEME}',
+EOF
+fi
+cat >> $CONFIGFILE <<EOF;
 );
 ?>
 EOF
