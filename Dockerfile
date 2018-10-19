@@ -5,6 +5,9 @@ LABEL description="A server software for creating file hosting services"
 # this fork is maintained by kleberbaum
 MAINTAINER Florian Kleber <kleberbaum@erebos.xyz>
 
+# Nextcloud change here to desired version
+ARG NEXTCLOUD_VERSION=14
+
 ENV UID=991 GID=991 \
     UPLOAD_MAX_SIZE=10G \
     APC_SHM_SIZE=128M \
@@ -47,9 +50,9 @@ RUN echo "## Installing base ##" && \
     && echo "extension=redis.so" > /php/conf.d/redis.ini \
     && mkdir /nextcloud \
     && cd /tmp \
-    && wget -q https://download.nextcloud.com/server/daily/latest.tar.bz2 \
+    && wget -q https://download.nextcloud.com/server/releases/latest-${NEXTCLOUD_VERSION}.tar.bz2 -O latest.tar.bz2 \
     && echo "Verifying checksum of latest.tar.bz2..." \
-    && wget -q https://download.nextcloud.com/server/daily/latest.tar.bz2.sha512 \
+    && wget -q https://download.nextcloud.com/server/releases/latest-${NEXTCLOUD_VERSION}.tar.bz2.sha512 -O latest.tar.bz2.sha512 \
     && echo "$(cat latest.tar.bz2.sha512 | awk '{print $1;}')  latest.tar.bz2" > latest.tar.bz2.sha512 \
     && CHECKSUM_STATE=$(echo -n $(sha512sum -c latest.tar.bz2.sha512) | tail -c 2) \
     && if [ "${CHECKSUM_STATE}" != "OK" ]; then echo "Warning! Checksum does not match!" && exit 1; fi \
